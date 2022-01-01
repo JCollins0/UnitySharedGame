@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class GameObject : MonoBehaviour
+public abstract class BaseGameObject : MonoBehaviour
 {
     public int id;
     public string objName;

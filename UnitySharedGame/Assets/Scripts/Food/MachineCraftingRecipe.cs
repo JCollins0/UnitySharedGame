@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MachineCraftingRecipe : GameObject
+public class MachineCraftingRecipe : BaseGameObject
 {
 
     private Item inputItem;

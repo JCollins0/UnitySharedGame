@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Recipe : GameObject
+public class Recipe : BaseGameObject
 {
     private List<RecipeIngredient> recipeIngredients;
 

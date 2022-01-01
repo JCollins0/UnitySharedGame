@@ -8,11 +8,12 @@ public enum ItemStatus
     NA=-1, NOT_SET, RAW, COOKED, BURNT
 }
 
-public class Item : GameObject
+public class Item : BaseGameObject
 {
     public int buyPrice;
     public int sellPrice;
     public ItemStatus status = ItemStatus.NA;
+    public int maxStackSize;
 
     public Item() { }
 

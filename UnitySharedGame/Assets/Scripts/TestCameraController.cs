@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TestCameraController : MonoBehaviour
 {
+    int quantity = 1;
+    public InventoryManager playerInventory;
+    public GameObject bread;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +32,22 @@ public class TestCameraController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.D))
         {
             this.transform.Translate(Vector3.right);
+        }
+        else if (Input.GetKeyDown(KeyCode.H))
+        {
+            playerInventory.AddItem(Instantiate(bread));
+        }
+        else if (Input.GetKeyDown(KeyCode.G))
+        {
+            playerInventory.RemoveItem(bread,quantity);
+        }
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            quantity--;
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            quantity++;
         }
     }
 }
