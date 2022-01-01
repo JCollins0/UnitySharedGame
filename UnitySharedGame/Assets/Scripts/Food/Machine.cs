@@ -6,7 +6,7 @@ public class Machine : MonoBehaviour
 {
 
     public string machineName;
-    public List<MachineCraftingRecipe> machineRecipes;
+    public List<CraftingRecipe> machineRecipes;
 
  
     // Start is called before the first frame update

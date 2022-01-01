@@ -1,20 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public enum SlotType
+
+public class InventorySlotScriptable
 {
-    INPUT=1, OUTPUT, IN_OUT
-}
-
-public class InventorySlot : MonoBehaviour
-{
-    // UI
-    public Text quantityLabel;
-    public Text itemNameLabel;
-    public Image image;
-
     // Logic
     public Item heldItem;
     public int quantity;
@@ -23,22 +11,22 @@ public class InventorySlot : MonoBehaviour
 
     public int HasItem(int id)
     {
-        if(heldItem == null)
+        if (heldItem == null)
         {
             return 0;
         }
-        
-        if(heldItem.id == id)
+
+        if (heldItem.id == id)
         {
             return quantity;
         }
         return 0;
-        
+
     }
 
     public Item AttemptRemove(int id)
     {
-        if(heldItem == null)
+        if (heldItem == null)
         {
             return null;
         }
@@ -46,14 +34,10 @@ public class InventorySlot : MonoBehaviour
         if (heldItem.id == id && quantity >= 1)
         {
             --quantity;
-            quantityLabel.text = quantity.ToString();
-
+            
             var temp = heldItem;
             if (quantity == 0)
             {
-                quantityLabel.text = "";
-                itemNameLabel.text = "";
-                image.sprite = null;
                 heldItem = null;
             }
             return temp;
@@ -89,7 +73,7 @@ public class InventorySlot : MonoBehaviour
             return true;
         }
 
-        
+
         // Case 2: Slot is filled but id matches and item's max stack size is not reached
         if (heldItem.id == id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
         {
@@ -106,34 +90,16 @@ public class InventorySlot : MonoBehaviour
         {
             heldItem = item;
             quantity = 1;
-            quantityLabel.text = quantity.ToString();
-            itemNameLabel.text = heldItem.objName;
-            image.sprite = item.sprite;
             return true;
         }
 
         // Case 2: Slot is filled but id matches and item's max stack size is not reached
-        
+
         if (heldItem.id == id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
         {
             quantity++;
-            quantityLabel.text = quantity.ToString();
             return true;
         }
         return false;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        quantityLabel.text = "";
-        image = GetComponent<Image>();
-        itemNameLabel.text = "";
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

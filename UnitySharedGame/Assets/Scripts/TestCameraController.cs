@@ -35,11 +35,18 @@ public class TestCameraController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.H))
         {
-            playerInventory.AddItem(Instantiate(bread));
+            if (playerInventory.CanAddItem(bread.GetComponent<Item>().id))
+            {
+                var add = bread.GetComponent<Item>();
+                playerInventory.AddItem(add);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
-            playerInventory.RemoveItem(bread,quantity);
+            if (playerInventory.HasItem(bread.GetComponent<Item>().id, quantity))
+            {
+                var items = playerInventory.RemoveItems(bread.GetComponent<Item>(), quantity);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.Z))
         {

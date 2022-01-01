@@ -13,48 +13,77 @@ public class InventoryManager : MonoBehaviour
     */
 
 
-    public int maxSlots;
-    public GameObject slotPrefab;
-    private List<GameObject> slots;
+    //public int maxSlots;
+    //public GameObject slotPrefab;
+    public List<GameObject> slots;
 
     // Start is called before the first frame update
     void Start()
     {
-        slots = new List<GameObject>();
-        for(int i = 0; i < maxSlots; i++)
+        //slots = new List<GameObject>();
+        for(int i = 0; i < slots.Count; i++)
         {
-            var slot = Instantiate(slotPrefab);
-            slot.transform.SetParent(this.transform);
-            slots.Add(slot);
+        //    var slot = Instantiate(slotPrefab);
+            slots[i].transform.SetParent(this.transform);
+        //    slots.Add(slot);
         }
     }
 
-
-    public bool CanAddItem(GameObject obj)
+    public bool SimulateAddItems(Dictionary<Item, int> inputItemQuantities)
     {
-        Item item = obj.GetComponent<Item>();
+        // Need to Simulate Entire Transaction
 
-        if(item == null)
+        List<InventorySlotScriptable> transaction = new List<InventorySlotScriptable>();
+        slots.ForEach((slotObj) =>
         {
-            throw new System.Exception("Object being added is not an item....");
-        }
+            var slot = slotObj.GetComponent<InventorySlot>();
+            if(slot.slotType == SlotType.INPUT || slot.slotType == SlotType.IN_OUT)
+            {
+                var fakeSlot = new InventorySlotScriptable
+                {
+                    heldItem = slot.heldItem,
+                    quantity = slot.quantity,
+                    maxStackSize = slot.maxStackSize
+                };
+                transaction.Add(fakeSlot);
+            }
+        });
 
-        int id = item.id;
+
+
+        foreach (var item in inputItemQuantities.Keys)
+        {
+            bool canAdd = false;
+            foreach(var slot in transaction)
+            {
+                if (slot.CanAdd(item.id))
+                {
+                    canAdd = true;
+                    if(!slot.SimulateAdd(item, item.id))
+                    {
+                        return false;
+                    }
+                }
+            }
+            if (!canAdd)
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+
+    public bool CanAddItem(int id, int quantityNeeded=1)
+    {
 
         foreach(var slotObj in slots)
         {
             InventorySlot slot = slotObj.GetComponent<InventorySlot>();
             if(slot != null && (slot.slotType == SlotType.INPUT || slot.slotType == SlotType.IN_OUT ))
             {
-                // Case 1: Empty Slot
-                if (slot.heldItem == null)
-                {
-                    return true;
-                }
-
-                // Case 2: Slot is filled but id matches and item's max stack size is not reached
-                Item slotItem = slot.heldItem.GetComponent<Item>();
-                if (slotItem.id == id && slot.quantity < slotItem.maxStackSize)
+                if (slot.CanAdd(id))
                 {
                     return true;
                 }
@@ -64,15 +93,8 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    public void AddItem(GameObject obj)
+    public bool AddItem(Item item)
     {
-        Item item = obj.GetComponent<Item>();
-
-        if (item == null)
-        {
-            throw new System.Exception("Object being added is not an item....");
-        }
-
         int id = item.id;
 
         foreach (var slotObj in slots)
@@ -80,78 +102,78 @@ public class InventoryManager : MonoBehaviour
             InventorySlot slot = slotObj.GetComponent<InventorySlot>();
             if (slot != null && (slot.slotType == SlotType.INPUT || slot.slotType == SlotType.IN_OUT))
             {
-                // Case 1: Empty Slot
-                if (slot.heldItem == null)
-                {
-                    slot.heldItem = obj;
-                    slot.quantity = 1;
-                    break;
-                }
-
-                // Case 2: Slot is filled but id matches and item's max stack size is not reached
-                Item slotItem = slot.heldItem.GetComponent<Item>();
-                if (slotItem.id == id && slot.quantity < slotItem.maxStackSize)
-                {
-                    slot.quantity++;
-                    Destroy(obj);
-                    break;
-                }
-            }
-        }
-
-    }
-
-    public bool HasItem(GameObject obj, int quantityNeeded = 1)
-    {
-        Item item = obj.GetComponent<Item>();
-
-        if (item == null)
-        {
-            throw new System.Exception("Object being tested is not an item....");
-        }
-
-        int id = item.id;
-
-        foreach (var slotObj in slots)
-        {
-            InventorySlot slot = slotObj.GetComponent<InventorySlot>();
-            if (slot != null && (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT) && slot.heldItem != null)
-            {
-                Item slotItem = slot.heldItem.GetComponent<Item>();
-                if (slotItem.id == id && slot.quantity >= quantityNeeded)
+                if (slot.AttemptAdd(item, id))
                 {
                     return true;
                 }
             }
         }
+
+        return false;
+
+    }
+
+    public bool HasAllItems(Dictionary<Item, int> inputItemQuantities)
+    {
+        foreach (var item in inputItemQuantities.Keys)
+        {
+            if (!HasItem(item.id, inputItemQuantities[item]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+            
+
+    public bool HasItem(int id, int quantityNeeded = 1)
+    {
+        Dictionary<int, int> amountLookup = new Dictionary<int, int>();
+        amountLookup[id] = 0;
+
+        foreach (var slotObj in slots)
+        {
+            InventorySlot slot = slotObj.GetComponent<InventorySlot>();
+            if (slot != null && (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT))
+            {
+                amountLookup[id] += slot.HasItem(id);
+            }
+        }
+
+        if(amountLookup[id] >= quantityNeeded)
+        {
+            return true;
+        }
+
+
         return false;
     }
 
-    public GameObject RemoveItem(GameObject obj, int quantityNeeded=1)
+
+    public List<Item> RemoveItems(Item item, int quantityNeeded = 1)
     {
-        Item item = obj.GetComponent<Item>();
-
-        if (item == null)
+        List<Item> removed = new List<Item>();
+        for(int i = 0; i < quantityNeeded; i++)
         {
-            throw new System.Exception("Object being removed is not an item....");
+            removed.Add(RemoveSingleItem(item));
         }
+        return removed;
+    }
 
+
+    public Item RemoveSingleItem(Item item)
+    {
         int id = item.id;
 
         foreach (var slotObj in slots)
         {
             InventorySlot slot = slotObj.GetComponent<InventorySlot>();
-            if (slot != null && (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT) && slot.heldItem != null)
+            if (slot != null && (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT))
             {
-                Item slotItem = slot.heldItem.GetComponent<Item>();
-                if (slotItem.id == id && slot.quantity >= quantityNeeded)
+                var temp = slot.AttemptRemove(id);
+                if(temp != null)
                 {
-                    var temp = slot.heldItem;
-                    slot.quantity -= quantityNeeded;
-                    if(slot.quantity == 0)
-                    {
-                        slot.heldItem = null;
-                    }
                     return temp;
                 }
             }
