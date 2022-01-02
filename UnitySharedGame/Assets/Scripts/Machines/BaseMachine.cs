@@ -54,6 +54,8 @@ public class BaseMachine : BaseGameObject
         InitRecipeSelectorPrefabs();
 
         recipeInfoPanel.SetActive(false);
+
+        GameEvents.current.onInventoryChange += OnInventoryChanged;
     }
 
     public void InitRecipeSelectorPrefabs()
@@ -95,19 +97,34 @@ public class BaseMachine : BaseGameObject
                             inputSlotManager.AddItem(playerInventory.RemoveSingleItem(item));
                         }
                     }
+
+                    //Dispatch Craft
                 }
                 
                
             }
-
         });
         return b;
+    }
+
+    private void OnInventoryChanged(int id)
+    {
+        if(id == playerInventory.id)
+        {
+            CraftingRecipe recipe = recipeInfoPanel.GetComponent<RecipeMetadata>().recipe;
+            addItemsButton.enabled = playerInventory.HasAllItems(recipe.GetInputDictionary());
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.current.onInventoryChange -= OnInventoryChanged;
     }
 
 }

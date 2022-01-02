@@ -2,30 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : BaseGameObject
 {
-    /*
-
-        TODO: Currently ivnetory system doesn't have the ability
-        to have consider multiple stacks of the same item type...
-        unless you remove them one at a time...
-
-    */
-
-
-    //public int maxSlots;
-    //public GameObject slotPrefab;
     public List<GameObject> slots;
 
     // Start is called before the first frame update
     void Start()
     {
-        //slots = new List<GameObject>();
         for(int i = 0; i < slots.Count; i++)
         {
-        //    var slot = Instantiate(slotPrefab);
             slots[i].transform.SetParent(this.transform);
-        //    slots.Add(slot);
         }
     }
 
@@ -95,20 +81,18 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddItem(Item item)
     {
-        int id = item.id;
-
         foreach (var slotObj in slots)
         {
             InventorySlot slot = slotObj.GetComponent<InventorySlot>();
             if (slot != null && (slot.slotType == SlotType.INPUT || slot.slotType == SlotType.IN_OUT))
             {
-                if (slot.AttemptAdd(item, id))
+                if (slot.AttemptAdd(item))
                 {
+                    GameEvents.current.InventoryChange(this.id);
                     return true;
                 }
             }
         }
-
         return false;
 
     }
@@ -164,16 +148,17 @@ public class InventoryManager : MonoBehaviour
 
     public Item RemoveSingleItem(Item item)
     {
-        int id = item.id;
+        int itemId = item.id;
 
         foreach (var slotObj in slots)
         {
             InventorySlot slot = slotObj.GetComponent<InventorySlot>();
             if (slot != null && (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT))
             {
-                var temp = slot.AttemptRemove(id);
+                var temp = slot.AttemptRemove(itemId);
                 if(temp != null)
                 {
+                    GameEvents.current.InventoryChange(this.id);
                     return temp;
                 }
             }

@@ -87,6 +87,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c35623fa6c134e4481fbfe252d2f4e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 1
+  objName: ToasterInput
   slots:
   - {fileID: 1512284764468889931}
   - {fileID: 1512284765012242277}
@@ -140,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c35623fa6c134e4481fbfe252d2f4e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 2
+  objName: ToasterOutput
   slots:
   - {fileID: 1512284765496836514}
   - {fileID: 1512284765247237617}

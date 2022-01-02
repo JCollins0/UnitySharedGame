@@ -79,7 +79,7 @@ public class InventorySlot : MonoBehaviour
         return false;
     }
 
-    public bool SimulateAdd(Item item, int id)
+    public bool SimulateAdd(Item item)
     {
         // Case 1: Empty Slot
         if (heldItem == null)
@@ -91,7 +91,7 @@ public class InventorySlot : MonoBehaviour
 
         
         // Case 2: Slot is filled but id matches and item's max stack size is not reached
-        if (heldItem.id == id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
+        if (heldItem.id == item.id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
         {
             quantity++;
             return true;
@@ -99,7 +99,7 @@ public class InventorySlot : MonoBehaviour
         return false;
     }
 
-    public bool AttemptAdd(Item item, int id)
+    public bool AttemptAdd(Item item)
     {
         // Case 1: Empty Slot
         if (heldItem == null)
@@ -114,7 +114,7 @@ public class InventorySlot : MonoBehaviour
 
         // Case 2: Slot is filled but id matches and item's max stack size is not reached
         
-        if (heldItem.id == id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
+        if (heldItem.id == item.id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
         {
             quantity++;
             quantityLabel.text = quantity.ToString();
