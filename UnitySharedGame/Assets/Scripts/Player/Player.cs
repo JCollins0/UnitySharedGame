@@ -13,7 +13,21 @@ public class Player : MonoBehaviour
 
     Animator playerAnim;
     int WalkState = 0;
+    private static Player playerInstance;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+
+        if(playerInstance == null)
+        {
+            playerInstance = this;
+        }
+        else
+        {
+            DestroyObject(gameObject);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
