@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,14 +37,14 @@ public class InventorySlot : MonoBehaviour
         
     }
 
-    public Item AttemptRemove(int id)
+    public Item AttemptRemove(Item item)
     {
         if(heldItem == null)
         {
             return null;
         }
 
-        if (heldItem.id == id && quantity >= 1)
+        if (heldItem.id == item.id && quantity >= 1)
         {
             --quantity;
             quantityLabel.text = quantity.ToString();
@@ -77,6 +78,53 @@ public class InventorySlot : MonoBehaviour
         }
 
         return false;
+    }
+
+    public Tuple<bool, int> CanAdd(Item item, int quantityNeeded = 1, bool considerOutputSlots=false)
+    {
+        // Cannot add if slot is output
+        if (slotType == SlotType.OUTPUT)
+        {
+            if (!considerOutputSlots)
+            {
+                return new Tuple<bool, int>(false, 0);
+            }
+        }
+
+        if( heldItem == null)
+        {
+            return new Tuple<bool, int>(true, Math.Min(item.maxStackSize, maxStackSize));
+        }
+
+        if (heldItem.id == item.id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
+        {
+            int maxAmountOfItemsCanAdd = Math.Min(item.maxStackSize, maxStackSize) - quantity;
+            return new Tuple<bool, int>(true, Math.Max(quantityNeeded - maxAmountOfItemsCanAdd, 0));
+        }
+
+        return new Tuple<bool, int>(false, 0);
+    }
+
+    public int HasItem(Item item, bool considerInputSlots = false)
+    {
+        if (slotType == SlotType.INPUT)
+        {
+            if (!considerInputSlots)
+            {
+                return 0;
+            }
+        }
+
+        if (heldItem == null)
+        {
+            return 0;
+        }
+
+        if (heldItem.id == item.id)
+        {
+            return quantity;
+        }
+        return 0;
     }
 
     public bool SimulateAdd(Item item)

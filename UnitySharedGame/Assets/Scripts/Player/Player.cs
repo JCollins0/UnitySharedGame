@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            DestroyObject(gameObject);
+            Destroy(gameObject);
         }
     }
     // Start is called before the first frame update

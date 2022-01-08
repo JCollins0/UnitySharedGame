@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class InventoryManager : BaseGameObject
 {
     public List<GameObject> slots;
@@ -12,7 +12,17 @@ public class InventoryManager : BaseGameObject
         for(int i = 0; i < slots.Count; i++)
         {
             slots[i].transform.SetParent(this.transform);
+            slots[i].GetComponent<Button>().onClick = ClickInventorySlot(slots[i]);
         }
+    }
+
+    public Button.ButtonClickedEvent ClickInventorySlot(GameObject slotObj)
+    {
+        Button.ButtonClickedEvent b = new Button.ButtonClickedEvent();
+        b.AddListener(() =>{
+            GameEvents.current.InventorySlotClick(slotObj.GetComponent<InventorySlot>());
+        });
+        return b;
     }
 
     public bool SimulateAddItems(Dictionary<Item, int> inputItemQuantities)
@@ -45,7 +55,7 @@ public class InventoryManager : BaseGameObject
                 if (slot.CanAdd(item.id))
                 {
                     canAdd = true;
-                    if(!slot.SimulateAdd(item, item.id))
+                    if(!slot.SimulateAdd(item))
                     {
                         return false;
                     }
@@ -148,14 +158,12 @@ public class InventoryManager : BaseGameObject
 
     public Item RemoveSingleItem(Item item)
     {
-        int itemId = item.id;
-
         foreach (var slotObj in slots)
         {
             InventorySlot slot = slotObj.GetComponent<InventorySlot>();
             if (slot != null && (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT))
             {
-                var temp = slot.AttemptRemove(itemId);
+                var temp = slot.AttemptRemove(item);
                 if(temp != null)
                 {
                     GameEvents.current.InventoryChange(this.id);

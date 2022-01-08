@@ -56,6 +56,12 @@ public class BaseMachine : BaseGameObject
         recipeInfoPanel.SetActive(false);
 
         GameEvents.current.onInventoryChange += OnInventoryChanged;
+        GameEvents.current.onInventorySlotClick += OnInventorySlotClicked;
+    }
+
+    private void OnInventorySlotClicked(InventorySlot obj)
+    {
+        Debug.LogFormat("{0}",obj.gameObject.name);
     }
 
     public void InitRecipeSelectorPrefabs()
@@ -112,7 +118,10 @@ public class BaseMachine : BaseGameObject
         if(id == playerInventory.id)
         {
             CraftingRecipe recipe = recipeInfoPanel.GetComponent<RecipeMetadata>().recipe;
-            addItemsButton.enabled = playerInventory.HasAllItems(recipe.GetInputDictionary());
+            if (recipe)
+            {
+                addItemsButton.enabled = playerInventory.HasAllItems(recipe.GetInputDictionary());
+            }
         }
     }
 
@@ -125,6 +134,7 @@ public class BaseMachine : BaseGameObject
     private void OnDestroy()
     {
         GameEvents.current.onInventoryChange -= OnInventoryChanged;
+        GameEvents.current.onInventorySlotClick -= OnInventorySlotClicked;
     }
 
 }

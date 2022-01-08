@@ -15,8 +15,14 @@ public class GameEvents : MonoBehaviour
     }
 
     public Action<int> onInventoryChange;
-    public void InventoryChange(int id)
+    public void InventoryChange(int inventoryId)
     {
-        onInventoryChange?.Invoke(id);
+        onInventoryChange?.Invoke(inventoryId);
+    }
+
+    public Action<InventorySlot> onInventorySlotClick;
+    public void InventorySlotClick(InventorySlot slot)
+    {
+        onInventorySlotClick?.Invoke(slot);
     }
 }
