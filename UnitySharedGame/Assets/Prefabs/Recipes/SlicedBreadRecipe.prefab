@@ -47,7 +47,8 @@ MonoBehaviour:
   objName: Sliced Bread Recipe
   inputItemsList:
   - {fileID: 7106863129324409512, guid: d6b2a27d263791e42b0b9f824133d6e7, type: 3}
-  minProcessingTime: 0
-  maxProcessingTime: 100
+  hasProcessingPenality: 1
+  minProcessingTime: 30
+  maxProcessingTime: 40
   outputItem: {fileID: 7827039192285184906, guid: 08db1a8cf97abbe45a982012ec53cefb, type: 3}
   outputQuantity: 1

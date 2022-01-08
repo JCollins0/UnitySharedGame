@@ -31,6 +31,7 @@ public class CraftingRecipe : BaseGameObject
     {
     }
 
+    public bool hasProcessingPenality;
     public int minProcessingTime;
     public int maxProcessingTime;
 
@@ -40,7 +41,7 @@ public class CraftingRecipe : BaseGameObject
     public override string ToString()
     {
         GetInputDictionary();
-        return string.Format("[MCR-({6}): {0}x{1} -> [{4}-{5}] -> {2}x{3}]", inputItems.Keys, inputItems.Values, outputItem, outputQuantity, minProcessingTime,maxProcessingTime, id);
+        return string.Format("[MCR-({6}): {0}x{1} -> [{4}-{7}-{5}] -> {2}x{3}]", inputItems.Keys, inputItems.Values, outputItem, outputQuantity, minProcessingTime,maxProcessingTime, id, hasProcessingPenality);
     }
 
     public string GetIngredientsText()
@@ -56,5 +57,25 @@ public class CraftingRecipe : BaseGameObject
             builder.AppendFormat("{0}x {1}", inputItems[item], item.objName).AppendLine();
         }
         return builder.ToString();
+    }
+
+    public Dictionary<Item,int> GetRecipeOutputBasedOnCookTime(int cookProgress)
+    {
+        Dictionary<Item, int> output = new Dictionary<Item, int>();
+        if (hasProcessingPenality)
+        {
+            if(cookProgress < minProcessingTime)
+            {
+                output.Add(outputItem, outputQuantity);//todo change
+                return output;
+            }
+            if(cookProgress > maxProcessingTime)
+            {
+                output.Add(outputItem, outputQuantity);
+                return output; //todo change
+            }
+        }
+        output.Add(outputItem, outputQuantity);
+        return output;
     }
 }

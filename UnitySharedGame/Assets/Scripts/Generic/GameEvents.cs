@@ -11,7 +11,7 @@ public class GameEvents : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        current = this;   
+        current = this;
     }
 
     public Action<int> onInventoryChange;
@@ -24,5 +24,11 @@ public class GameEvents : MonoBehaviour
     public void InventorySlotClick(InventorySlot slot)
     {
         onInventorySlotClick?.Invoke(slot);
+    }
+
+    public Action<CraftingRecipe> onMakeRecipeClick;
+    public void MakeRecipeClick(CraftingRecipe recipe)
+    {
+        onMakeRecipeClick?.Invoke(recipe);
     }
 }

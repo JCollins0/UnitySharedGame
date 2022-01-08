@@ -10,16 +10,20 @@ public class BaseMachine : BaseGameObject
     public List<CraftingRecipe> validRecipes = new List<CraftingRecipe>();
     public GameObject staticUiPrefab;
     public GameObject UIParentContainer;
-    public GameObject selectorPrefab;
+    
     public GameObject inventoryPrefab;
-    public InventoryManager playerInventory;
+    public InventoryManagerV2 playerInventory;
+    public RecipePanel recipePanel;
 
-    private GameObject recipeInfoPanel;
-    private GameObject selectorContent;
     private GameObject inventoryContainer;
-    private Button addItemsButton;
-    private InventoryManager inputSlotManager;
-    private InventoryManager outputSlotManager;
+    private InventoryManagerV2 inputSlotManager;
+    private InventoryManagerV2 outputSlotManager;
+
+    private GameObject internalUI;
+    private ProgressBar progressBar;
+    private Button completeCookButton;
+
+    private CraftingRecipe currentRecipe;
 
     public void CollectOutput(Button button)
     {
@@ -34,106 +38,107 @@ public class BaseMachine : BaseGameObject
     // Start is called before the first frame update
     void Start()
     {
-        var internalUI = Instantiate(staticUiPrefab, UIParentContainer.transform, false);
+        //UIParentContainer.SetActive(true);
+        internalUI = Instantiate(staticUiPrefab, UIParentContainer.transform, false);
         
-        recipeInfoPanel = GameObject.Find("RecipeInfoPanel");
-        
-
-        addItemsButton = GameObject.Find("RecipeInfoPanel/AddItemsButton").GetComponent<Button>();
-
-        addItemsButton.onClick = MoveIngredientsFromPlayerToMachine();
-
-        selectorContent = GameObject.Find("RecipeSelectorView/Viewport/Content");
-
         inventoryContainer = GameObject.Find("InventorySection");
         Instantiate(inventoryPrefab, inventoryContainer.transform, false);
 
-        inputSlotManager = GameObject.Find("InputSlots").GetComponent<InventoryManager>();
-        outputSlotManager = GameObject.Find("OutputSlots").GetComponent<InventoryManager>();
+        inputSlotManager = GameObject.Find("InputSlots").GetComponent<InventoryManagerV2>();
+        outputSlotManager = GameObject.Find("OutputSlots").GetComponent<InventoryManagerV2>();
 
-        InitRecipeSelectorPrefabs();
+        progressBar = GameObject.Find("ProgressBar").GetComponent<ProgressBar>();
+        completeCookButton = GameObject.Find("CompleteCookButton").GetComponent<Button>();
+        completeCookButton.onClick.AddListener(() =>
+        {
+            // get current recipe,
+            CraftingRecipe recipe = this.currentRecipe;
+            // get output based on progress time
+            int cookProgress = progressBar.currentValue;
+            Dictionary<Item,int> output = recipe.GetRecipeOutputBasedOnCookTime(cookProgress);
+            // remove input and move to output
+            inputSlotManager.ForceClearSlots();
+            outputSlotManager.AddAllItems(output, considerOutputSlots: true);
 
-        recipeInfoPanel.SetActive(false);
+            // reset stuff
+            currentRecipe = null;
+            UpdateCookButton();
+        });
 
-        GameEvents.current.onInventoryChange += OnInventoryChanged;
+        UpdateCookButton();
+
+        //internalUI.SetActive(false);
+        //UIParentContainer.SetActive(false);
         GameEvents.current.onInventorySlotClick += OnInventorySlotClicked;
+        GameEvents.current.onMakeRecipeClick += MoveIngredientsFromPlayerToMachine;
     }
 
-    private void OnInventorySlotClicked(InventorySlot obj)
+    private void OnInventorySlotClicked(InventorySlot slot)
     {
-        Debug.LogFormat("{0}",obj.gameObject.name);
-    }
-
-    public void InitRecipeSelectorPrefabs()
-    {
-        foreach(var recipe in validRecipes)
+        Tuple<Item, int> output = slot.PeekOutput();
+        Dictionary<Item, int> outputDict = new Dictionary<Item, int>
         {
-            var selectorButton = Instantiate(selectorPrefab, selectorContent.transform, false);
-            selectorButton.GetComponent<Button>().onClick = LoadRecipe(recipe);
+            { output.Item1, output.Item2 }
+        };
+        if (playerInventory.AddAllItems(outputDict))
+        {
+            slot.ForceClearSlot();
         }
     }
 
-    private Button.ButtonClickedEvent LoadRecipe(CraftingRecipe recipe)
-    {
-        var b = new Button.ButtonClickedEvent();
-        b.AddListener(()=>{
-            recipeInfoPanel.GetComponent<RecipeMetadata>().OnSelectRecipe(recipe);
-            addItemsButton.enabled = playerInventory.HasAllItems(recipe.GetInputDictionary());
-        });
-        return b;
-    }
 
-    private Button.ButtonClickedEvent MoveIngredientsFromPlayerToMachine()
-    {
-        
-        var b = new Button.ButtonClickedEvent();
-        b.AddListener(() => {
-            CraftingRecipe recipe = recipeInfoPanel.GetComponent<RecipeMetadata>().recipe;
-            Dictionary<Item, int> inputItems = recipe.GetInputDictionary();
-            if (playerInventory.HasAllItems(inputItems))
-            {
-                
-                if (inputSlotManager.SimulateAddItems(inputItems))
-                {
-                    Debug.LogFormat("Making Recipe {0}", recipe);
-                    foreach (var item in inputItems.Keys)
-                    {
-                        for (int i = 0; i < inputItems[item]; i++)
-                        {
-                            inputSlotManager.AddItem(playerInventory.RemoveSingleItem(item));
-                        }
-                    }
 
-                    //Dispatch Craft
-                }
-                
-               
-            }
-        });
-        return b;
-    }
-
-    private void OnInventoryChanged(int id)
+    private void MoveIngredientsFromPlayerToMachine(CraftingRecipe recipe)
     {
-        if(id == playerInventory.id)
+
+        Dictionary<Item, int> inputItems = recipe.GetInputDictionary();
+        if (playerInventory.HasAllItems(inputItems))
         {
-            CraftingRecipe recipe = recipeInfoPanel.GetComponent<RecipeMetadata>().recipe;
-            if (recipe)
+
+            if (inputSlotManager.AddAllItems(inputItems))
             {
-                addItemsButton.enabled = playerInventory.HasAllItems(recipe.GetInputDictionary());
+
+                playerInventory.RemoveMultipleItems(inputItems);
+                Debug.LogFormat("Making Recipe {0}", recipe);
+                
+                //Dispatch Craft
+                progressBar.LoadRecipe(recipe);
+                this.currentRecipe = recipe;
+
+                UpdateCookButton();
             }
+
+
         }
+    }
+
+
+    private void UpdateCookButton()
+    {
+        completeCookButton.enabled = this.currentRecipe != null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+
+            bool turnOn = !internalUI.activeSelf;
+            internalUI.SetActive(!internalUI.activeSelf);
+            UIParentContainer.SetActive(!UIParentContainer.activeSelf);
+
+            if (turnOn)
+            {
+                recipePanel.AddRecipes(validRecipes);
+            }
+            
+        }
     }
 
     private void OnDestroy()
     {
-        GameEvents.current.onInventoryChange -= OnInventoryChanged;
+        GameEvents.current.onMakeRecipeClick -= MoveIngredientsFromPlayerToMachine;
         GameEvents.current.onInventorySlotClick -= OnInventorySlotClicked;
     }
 

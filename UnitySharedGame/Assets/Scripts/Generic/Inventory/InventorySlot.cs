@@ -21,6 +21,40 @@ public class InventorySlot : MonoBehaviour
     public int quantity;
     public int maxStackSize;
     public SlotType slotType = SlotType.IN_OUT;
+    public bool locked;
+
+    private static Tuple<bool, int> EMPTY_TUPLE = Tuple.Create(false, 0);
+    private static Tuple<Item, int> EMPTY_ITEM_TUPLE = Tuple.Create((Item)null, 0);
+
+
+    public Tuple<Item, int> PeekOutput()
+    {
+        if (heldItem == null)
+        {
+            return EMPTY_ITEM_TUPLE;
+        }
+
+        return new Tuple<Item, int>(heldItem, quantity);
+    }
+
+    public Tuple<Item, int> ForceClearSlot()
+    {
+        if(heldItem == null)
+        {
+            return EMPTY_ITEM_TUPLE;
+        }
+
+        int tempQuantity = quantity;
+        Item temp = heldItem;
+
+        quantity = 0;
+        quantityLabel.text = "";
+        itemNameLabel.text = "";
+        image.sprite = null;
+        heldItem = null;
+
+        return new Tuple<Item, int>(temp, tempQuantity);
+    }
 
     public int HasItem(int id)
     {
@@ -39,6 +73,11 @@ public class InventorySlot : MonoBehaviour
 
     public Item AttemptRemove(Item item)
     {
+        if (locked)
+        {
+            return null;
+        }
+
         if(heldItem == null)
         {
             return null;
@@ -65,6 +104,11 @@ public class InventorySlot : MonoBehaviour
 
     public bool CanAdd(int id)
     {
+        if (locked)
+        {
+            return false;
+        }
+
         // Case 1: Empty Slot
         if (heldItem == null)
         {
@@ -82,12 +126,16 @@ public class InventorySlot : MonoBehaviour
 
     public Tuple<bool, int> CanAdd(Item item, int quantityNeeded = 1, bool considerOutputSlots=false)
     {
+        if (locked)
+        {
+            return EMPTY_TUPLE;
+        }
         // Cannot add if slot is output
         if (slotType == SlotType.OUTPUT)
         {
             if (!considerOutputSlots)
             {
-                return new Tuple<bool, int>(false, 0);
+                return EMPTY_TUPLE;
             }
         }
 
@@ -102,7 +150,7 @@ public class InventorySlot : MonoBehaviour
             return new Tuple<bool, int>(true, Math.Max(quantityNeeded - maxAmountOfItemsCanAdd, 0));
         }
 
-        return new Tuple<bool, int>(false, 0);
+        return EMPTY_TUPLE;
     }
 
     public int HasItem(Item item, bool considerInputSlots = false)
@@ -129,6 +177,10 @@ public class InventorySlot : MonoBehaviour
 
     public bool SimulateAdd(Item item)
     {
+        if (locked)
+        {
+            return false;
+        }
         // Case 1: Empty Slot
         if (heldItem == null)
         {
@@ -149,6 +201,10 @@ public class InventorySlot : MonoBehaviour
 
     public bool AttemptAdd(Item item)
     {
+        if (locked)
+        {
+            return false;
+        }
         // Case 1: Empty Slot
         if (heldItem == null)
         {

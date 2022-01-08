@@ -15,9 +15,12 @@ public class InventoryManagerV2 : BaseGameObject
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            slots[i].transform.SetParent(transform);
-            slots[i].GetComponent<Button>().onClick.AddListener(
-                () => GameEvents.current.InventorySlotClick(slots[i].GetComponent<InventorySlot>())
+            // using i inside the lamda function uses latest closure value of which would be 
+            // slots.Count + 1 causing OOB exception
+            int j = i;
+            slots[j].transform.SetParent(transform);
+            slots[j].GetComponent<Button>().onClick.AddListener( 
+                () => GameEvents.current.InventorySlotClick(slots[j].GetComponent<InventorySlot>())
             );
         }
     }
@@ -154,7 +157,7 @@ public class InventoryManagerV2 : BaseGameObject
         return false;
     }
 
-    private bool HasAllItems(Dictionary<Item, int> inputItemQuantities, bool considerInputSlots = false)
+    public bool HasAllItems(Dictionary<Item, int> inputItemQuantities, bool considerInputSlots = false)
     {
         foreach (var item in inputItemQuantities.Keys)
         {
@@ -221,4 +224,39 @@ public class InventoryManagerV2 : BaseGameObject
         return removed;
     }
 
+    public void ForceClearSlots()
+    {
+        //Maybe will return something
+        foreach (var slotObj in slots)
+        {
+            var slot = slotObj.GetComponent<InventorySlot>();
+            slot.ForceClearSlot();
+        }
+    }
+
+
+    // Lock Input Slots
+    public void LockSlots(SlotType type)
+    {
+        foreach(var slotObj in slots)
+        {
+            var slot = slotObj.GetComponent<InventorySlot>();
+            if(slot.slotType == type || type == SlotType.IN_OUT)
+            {
+                slot.locked = true;
+            }
+        }
+    }
+
+    public void UnlockSlots(SlotType type)
+    {
+        foreach (var slotObj in slots)
+        {
+            var slot = slotObj.GetComponent<InventorySlot>();
+            if (slot.slotType == type || type == SlotType.IN_OUT)
+            {
+                slot.locked = false;
+            }
+        }
+    }
 }
