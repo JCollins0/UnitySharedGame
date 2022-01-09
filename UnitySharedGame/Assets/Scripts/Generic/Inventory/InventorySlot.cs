@@ -211,7 +211,7 @@ public class InventorySlot : MonoBehaviour
             heldItem = item;
             quantity = 1;
             quantityLabel.text = quantity.ToString();
-            itemNameLabel.text = heldItem.objName;
+            itemNameLabel.text = heldItem.itemName;
             image.sprite = item.sprite;
             return true;
         }
