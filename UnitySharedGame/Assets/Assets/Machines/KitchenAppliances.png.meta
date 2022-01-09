@@ -4,13 +4,13 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 4900812968118234194
-    second: KitchenAppliances_0
+    second: stove
   - first:
       213: -2274217799635561429
-    second: KitchenAppliances_1
+    second: microwave
   - first:
       213: -5157307277942230122
-    second: KitchenAppliances_2
+    second: sink
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -124,7 +124,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: KitchenAppliances_0
+      name: stove
       rect:
         serializedVersion: 2
         x: 0
@@ -132,7 +132,7 @@ TextureImporter:
         width: 64
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -145,7 +145,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: KitchenAppliances_1
+      name: microwave
       rect:
         serializedVersion: 2
         x: 64
@@ -153,7 +153,7 @@ TextureImporter:
         width: 64
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -166,7 +166,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: KitchenAppliances_2
+      name: sink
       rect:
         serializedVersion: 2
         x: 0
@@ -174,7 +174,7 @@ TextureImporter:
         width: 64
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

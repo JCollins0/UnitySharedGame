@@ -12,7 +12,7 @@ public class RecipeMetadata : MonoBehaviour
     public void OnSelectRecipe(CraftingRecipe recipe)
     {
         this.recipe = recipe;
-        recipeNameLabel.text = recipe.objName;
+        recipeNameLabel.text = recipe.recipeName;
         recipeIngredientsLabel.text = recipe.GetIngredientsText();
         this.gameObject.SetActive(true);
     }

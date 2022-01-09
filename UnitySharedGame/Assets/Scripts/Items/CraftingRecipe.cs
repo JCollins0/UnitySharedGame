@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
-public class CraftingRecipe : BaseGameObject
+[CreateAssetMenu(fileName = "New Recipe", menuName = "Recipes/CraftingRecipe")]
+public class CraftingRecipe : ScriptableObject
 {
+    public int id;
+    public string recipeName;
     public List<Item> inputItemsList;
     private Dictionary<Item, int> inputItems;
 
@@ -49,12 +52,12 @@ public class CraftingRecipe : BaseGameObject
         StringBuilder builder = new StringBuilder();
 
         builder.Append("Makes:").AppendLine();
-        builder.AppendFormat("{0}x {1}", outputQuantity, outputItem.objName).AppendLine();
+        builder.AppendFormat("{0}x {1}", outputQuantity, outputItem.itemName).AppendLine();
         builder.AppendLine();
         builder.Append("Using:").AppendLine();
         foreach (Item item in GetInputDictionary().Keys)
         {
-            builder.AppendFormat("{0}x {1}", inputItems[item], item.objName).AppendLine();
+            builder.AppendFormat("{0}x {1}", inputItems[item], item.itemName).AppendLine();
         }
         return builder.ToString();
     }

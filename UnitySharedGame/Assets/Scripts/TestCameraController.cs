@@ -6,12 +6,11 @@ public class TestCameraController : MonoBehaviour
 {
     int quantity = 1;
     public InventoryManager playerInventory;
-    public GameObject bread;
+    public Item bread;
 
     // Start is called before the first frame update
     void Start()
     {
-        FoodDefintions fd = new FoodDefintions(); //temporary
     }
 
     // Update is called once per frame
@@ -35,17 +34,16 @@ public class TestCameraController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.H))
         {
-            if (playerInventory.CanAddItem(bread.GetComponent<Item>().id))
+            if (playerInventory.CanAddItem(bread.id))
             {
-                var add = bread.GetComponent<Item>();
-                playerInventory.AddItem(add);
+                playerInventory.AddItem(bread);
             }
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
-            if (playerInventory.HasItem(bread.GetComponent<Item>().id, quantity))
+            if (playerInventory.HasItem(bread.id, quantity))
             {
-                var items = playerInventory.RemoveItems(bread.GetComponent<Item>(), quantity);
+                playerInventory.RemoveItems(bread, quantity);
             }
         }
         else if (Input.GetKeyDown(KeyCode.Z))

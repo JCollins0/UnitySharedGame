@@ -52,7 +52,7 @@ public class RecipePanel : MonoBehaviour
                 recipeInfoPanel.GetComponent<RecipeMetadata>().OnSelectRecipe(recipe);
                 addItemsButton.enabled = playerInventory.HasAllItems(recipe.GetInputDictionary());
             });
-            selectorButton.GetComponentInChildren<Text>().text = recipe.objName;
+            selectorButton.GetComponentInChildren<Text>().text = recipe.recipeName;
         }
     }
 

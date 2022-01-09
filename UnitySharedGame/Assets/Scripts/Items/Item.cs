@@ -1,23 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public enum ItemStatus
 {
     NA=-1, NOT_SET, RAW, COOKED, BURNT
 }
 
-public class Item : BaseGameObject
+public enum ItemType
 {
+    ITEM, FOOD
+}
+
+[CreateAssetMenu(fileName = "New Item", menuName = "Items/Item")]
+public class Item : ScriptableObject
+{
+    public int id;
+    public string itemName;
     public int buyPrice;
     public int sellPrice;
-    public ItemStatus status = ItemStatus.NA;
-    public int maxStackSize;
+    virtual public ItemStatus Status { get => ItemStatus.NA; }
+    virtual public ItemType Type { get => ItemType.ITEM; }
+    public int maxStackSize = 1;
     public Sprite sprite;
-
-    public Item() { }
-
+    
     public override bool Equals(object other)
     {
         if (other is Item)
@@ -34,7 +38,7 @@ public class Item : BaseGameObject
 
     public override string ToString()
     {
-        return string.Format("[{0}-{1}]",id, objName);
+        return string.Format("[{0}-{1}]",id, itemName);
     }
 
 
