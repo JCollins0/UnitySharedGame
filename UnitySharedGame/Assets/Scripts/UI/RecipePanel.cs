@@ -17,6 +17,8 @@ public class RecipePanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var machineUI = GameObject.Find("MachineInventoryContainer");
+        machineUI.SetActive(true);
         selectorContent = GameObject.Find("RecipePanel/RecipeSelectPanel/RecipeSelectorView/Viewport/Content");
         addItemsButton = GameObject.Find("RecipePanel/RecipeInfoPanel/AddItemsButton").GetComponent<Button>();
         recipeInfoPanel = GameObject.Find("RecipePanel/RecipeInfoPanel");
@@ -26,6 +28,7 @@ public class RecipePanel : MonoBehaviour
 
         GameEvents.current.onInventoryChange += OnInventoryChanged;
         recipeInfoPanel.SetActive(false);
+        machineUI.SetActive(false);
     }
 
 

@@ -8,42 +8,28 @@ using UnityEngine.UI;
 public class BaseMachine : BaseGameObject
 {
     public List<CraftingRecipe> validRecipes = new List<CraftingRecipe>();
-    public GameObject staticUiPrefab;
     public GameObject UIParentContainer;
+    private GameObject MachineUIContainer;
     
-    public GameObject inventoryPrefab;
     public InventoryManagerV2 playerInventory;
-    public RecipePanel recipePanel;
+    public RecipePanel recipePanel; //maybe make static
 
-    private GameObject inventoryContainer;
     private InventoryManagerV2 inputSlotManager;
     private InventoryManagerV2 outputSlotManager;
 
-    private GameObject internalUI;
     private ProgressBar progressBar;
     private Button completeCookButton;
 
     private CraftingRecipe currentRecipe;
 
-    public void CollectOutput(Button button)
-    {
-
-    }
-
-    public void AddRecipe(CraftingRecipe recipe)
-    {
-        validRecipes.Add(recipe);
-    }
+    private bool playerNearby;
+    private bool activeState;
 
     // Start is called before the first frame update
     void Start()
     {
-        //UIParentContainer.SetActive(true);
-        internalUI = Instantiate(staticUiPrefab, UIParentContainer.transform, false);
-        
-        inventoryContainer = GameObject.Find("InventorySection");
-        Instantiate(inventoryPrefab, inventoryContainer.transform, false);
-
+        MachineUIContainer = GameObject.Find("MachineInventoryContainer");
+        // Unique per machine, may need to move these
         inputSlotManager = GameObject.Find("InputSlots").GetComponent<InventoryManagerV2>();
         outputSlotManager = GameObject.Find("OutputSlots").GetComponent<InventoryManagerV2>();
 
@@ -57,16 +43,15 @@ public class BaseMachine : BaseGameObject
             int cookProgress = progressBar.currentValue;
             Dictionary<Item,int> output = recipe.GetRecipeOutputBasedOnCookTime(cookProgress);
             // remove input and move to output
-            inputSlotManager.ForceClearSlots();
-            outputSlotManager.AddAllItems(output, considerOutputSlots: true);
-
-            // reset stuff
-            currentRecipe = null;
-            UpdateCookButton();
+            if(outputSlotManager.AddAllItems(output, considerOutputSlots: true)){
+                inputSlotManager.ForceClearSlots();
+                // reset stuff
+                currentRecipe = null;
+                UpdateCookButton();
+            }
         });
 
         UpdateCookButton();
-
         //internalUI.SetActive(false);
         //UIParentContainer.SetActive(false);
         GameEvents.current.onInventorySlotClick += OnInventorySlotClicked;
@@ -94,7 +79,6 @@ public class BaseMachine : BaseGameObject
         Dictionary<Item, int> inputItems = recipe.GetInputDictionary();
         if (playerInventory.HasAllItems(inputItems))
         {
-
             if (inputSlotManager.AddAllItems(inputItems))
             {
 
@@ -107,8 +91,6 @@ public class BaseMachine : BaseGameObject
 
                 UpdateCookButton();
             }
-
-
         }
     }
 
@@ -121,14 +103,13 @@ public class BaseMachine : BaseGameObject
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && playerNearby)
         {
+            activeState = !activeState;
+            UIParentContainer.SetActive(activeState);
+            MachineUIContainer.SetActive(activeState);
 
-            bool turnOn = !internalUI.activeSelf;
-            internalUI.SetActive(!internalUI.activeSelf);
-            UIParentContainer.SetActive(!UIParentContainer.activeSelf);
-
-            if (turnOn)
+            if (activeState)
             {
                 recipePanel.AddRecipes(validRecipes);
             }
@@ -140,6 +121,22 @@ public class BaseMachine : BaseGameObject
     {
         GameEvents.current.onMakeRecipeClick -= MoveIngredientsFromPlayerToMachine;
         GameEvents.current.onInventorySlotClick -= OnInventorySlotClicked;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Player"))
+        {
+            playerNearby = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Player"))
+        {
+            playerNearby = false;
+        }
     }
 
 }

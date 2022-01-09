@@ -5772,6 +5772,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chef_Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5982926526945140191, guid: 07e7f42e2c525774ca5ffc66cf03ea02, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e7f42e2c525774ca5ffc66cf03ea02, type: 3}
 --- !u!1 &2096616946
