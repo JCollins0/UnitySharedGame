@@ -7,34 +7,36 @@ public class NewCar : MonoBehaviour
     GameObject car;
     Vector3 carPosition;
     GameObject[] carsTotal;
+    int carCount = 1;
 
     // Start is called before the first frame update
     void Start()
     {
         car = GameObject.Find("Car");
         carPosition = car.transform.position;
-
+        UpdateCarArray();
     }
     
 
     // Update is called once per frame
     void Update()
     {
-        carsTotal = GameObject.FindGameObjectsWithTag("Car");
+        
 
         if (carsTotal.Length > 0)
         {
-            car = carsTotal[carsTotal.Length - 1];
-            carPosition = car.transform.position;
+            UpdateCarArray();
 
             if (Input.GetKeyDown(KeyCode.N))
             {
-                carPosition.x -= 5;
+                carPosition = car.transform.position;
+                carPosition.x -= 8;
                 Instantiate(car, carPosition, Quaternion.identity);
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Destroy(carsTotal[0]);
+                UpdateCarArray();
+                car = carsTotal[carsTotal.Length - 1];
+                car.gameObject.name = "Car" + carCount;
+                carCount++;
+
             }
 
         }
@@ -50,5 +52,10 @@ public class NewCar : MonoBehaviour
     {
 
         
+    }
+    
+    void UpdateCarArray()
+    {
+       carsTotal = GameObject.FindGameObjectsWithTag("Car");
     }
 }
