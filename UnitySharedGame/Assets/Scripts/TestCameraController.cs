@@ -5,7 +5,7 @@ using UnityEngine;
 public class TestCameraController : MonoBehaviour
 {
     int quantity = 1;
-    public InventoryManager playerInventory;
+    public InventoryManagerV2 playerInventory;
     public Item bread;
 
     // Start is called before the first frame update
@@ -34,16 +34,16 @@ public class TestCameraController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.H))
         {
-            if (playerInventory.CanAddItem(bread.id))
+            if (playerInventory.CanAdd(bread))
             {
                 playerInventory.AddItem(bread);
             }
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
-            if (playerInventory.HasItem(bread.id, quantity))
+            if (playerInventory.HasItem(bread, quantity))
             {
-                playerInventory.RemoveItems(bread, quantity);
+                playerInventory.RemoveMultipleSingleItem(bread, quantity);
             }
         }
         else if (Input.GetKeyDown(KeyCode.Z))

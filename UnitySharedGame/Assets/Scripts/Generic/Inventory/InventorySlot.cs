@@ -1,21 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum SlotType
 {
-    INPUT=1, OUTPUT, IN_OUT
+    INPUT = 1, OUTPUT, IN_OUT
 }
 
-public class InventorySlot : MonoBehaviour
-{
-    // UI
-    public Text quantityLabel;
-    public Text itemNameLabel;
-    public Image image;
 
+[CreateAssetMenu(fileName = "New Inventory Slot", menuName = "Inventory/Slot")]
+public class InventorySlot : ScriptableObject
+{
     // Logic
     public Item heldItem;
     public int quantity;
@@ -23,10 +17,14 @@ public class InventorySlot : MonoBehaviour
     public SlotType slotType = SlotType.IN_OUT;
     public bool locked;
 
-    private static Tuple<bool, int> EMPTY_TUPLE = Tuple.Create(false, 0);
-    private static Tuple<Item, int> EMPTY_ITEM_TUPLE = Tuple.Create((Item)null, 0);
+    private static readonly Tuple<bool, int> EMPTY_TUPLE = Tuple.Create(false, 0);
+    private static readonly Tuple<Item, int> EMPTY_ITEM_TUPLE = Tuple.Create((Item)null, 0);
 
-
+    public bool Interactable()
+    {
+        return slotType == SlotType.OUTPUT && heldItem != null;
+    }
+    
     public Tuple<Item, int> PeekOutput()
     {
         if (heldItem == null)
@@ -39,7 +37,7 @@ public class InventorySlot : MonoBehaviour
 
     public Tuple<Item, int> ForceClearSlot()
     {
-        if(heldItem == null)
+        if (heldItem == null)
         {
             return EMPTY_ITEM_TUPLE;
         }
@@ -48,9 +46,6 @@ public class InventorySlot : MonoBehaviour
         Item temp = heldItem;
 
         quantity = 0;
-        quantityLabel.text = "";
-        itemNameLabel.text = "";
-        image.sprite = null;
         heldItem = null;
 
         return new Tuple<Item, int>(temp, tempQuantity);
@@ -58,17 +53,17 @@ public class InventorySlot : MonoBehaviour
 
     public int HasItem(int id)
     {
-        if(heldItem == null)
+        if (heldItem == null)
         {
             return 0;
         }
-        
-        if(heldItem.id == id)
+
+        if (heldItem.id == id)
         {
             return quantity;
         }
         return 0;
-        
+
     }
 
     public Item AttemptRemove(Item item)
@@ -78,7 +73,7 @@ public class InventorySlot : MonoBehaviour
             return null;
         }
 
-        if(heldItem == null)
+        if (heldItem == null)
         {
             return null;
         }
@@ -86,14 +81,10 @@ public class InventorySlot : MonoBehaviour
         if (heldItem.id == item.id && quantity >= 1)
         {
             --quantity;
-            quantityLabel.text = quantity.ToString();
 
             var temp = heldItem;
             if (quantity == 0)
             {
-                quantityLabel.text = "";
-                itemNameLabel.text = "";
-                image.sprite = null;
                 heldItem = null;
             }
             return temp;
@@ -124,7 +115,7 @@ public class InventorySlot : MonoBehaviour
         return false;
     }
 
-    public Tuple<bool, int> CanAdd(Item item, int quantityNeeded = 1, bool considerOutputSlots=false)
+    public Tuple<bool, int> CanAdd(Item item, int quantityNeeded = 1, bool considerOutputSlots = false)
     {
         if (locked)
         {
@@ -139,7 +130,7 @@ public class InventorySlot : MonoBehaviour
             }
         }
 
-        if( heldItem == null)
+        if (heldItem == null)
         {
             return new Tuple<bool, int>(true, Math.Min(item.maxStackSize, maxStackSize));
         }
@@ -189,7 +180,7 @@ public class InventorySlot : MonoBehaviour
             return true;
         }
 
-        
+
         // Case 2: Slot is filled but id matches and item's max stack size is not reached
         if (heldItem.id == item.id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
         {
@@ -210,34 +201,16 @@ public class InventorySlot : MonoBehaviour
         {
             heldItem = item;
             quantity = 1;
-            quantityLabel.text = quantity.ToString();
-            itemNameLabel.text = heldItem.itemName;
-            image.sprite = item.sprite;
             return true;
         }
 
         // Case 2: Slot is filled but id matches and item's max stack size is not reached
-        
+
         if (heldItem.id == item.id && quantity < maxStackSize && quantity < heldItem.maxStackSize)
         {
             quantity++;
-            quantityLabel.text = quantity.ToString();
             return true;
         }
         return false;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        quantityLabel.text = "";
-        image = GetComponent<Image>();
-        itemNameLabel.text = "";
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

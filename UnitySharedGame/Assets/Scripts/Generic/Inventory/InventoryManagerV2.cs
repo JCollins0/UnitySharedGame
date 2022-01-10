@@ -10,32 +10,46 @@ public class InventoryManagerV2 : BaseGameObject
 
     public List<GameObject> slots;
 
-    // Start is called before the first frame update
-    void Start()
+    public void ClearSlots()
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            // using i inside the lamda function uses latest closure value of which would be 
-            // slots.Count + 1 causing OOB exception
-            int j = i;
-            slots[j].transform.SetParent(transform);
-            slots[j].GetComponent<Button>().onClick.AddListener( 
-                () => GameEvents.current.InventorySlotClick(slots[j].GetComponent<InventorySlot>())
-            );
+            Destroy(slots[i]);
         }
+        slots.Clear();
+    }
+
+    public void AddSlot(GameObject slot)
+    {
+        slots.Add(slot);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        //for (int i = 0; i < slots.Count; i++)
+        //{
+        //    // using i inside the lamda function uses latest closure value of which would be 
+        //    // slots.Count + 1 causing OOB exception
+        //    int j = i;
+        //    slots[j].transform.SetParent(transform);
+        //    slots[j].GetComponent<Button>().onClick.AddListener( 
+        //        () => GameEvents.current.InventorySlotClick(slots[j].GetComponent<InventorySlotUI>().slot)
+        //    );
+        //}
     }
 
 
     /*
         Adding Items
     */
-    private bool CanAdd(Item item, int quantity = 1, bool considerOutputSlots = false)
+    public bool CanAdd(Item item, int quantity = 1, bool considerOutputSlots = false)
     {
         int itemsLeftToAdd = quantity;
 
         foreach (var slotObj in slots)
         {
-            var slot = slotObj.GetComponent<InventorySlot>();
+            var slot = slotObj.GetComponent<InventorySlotUI>().slot;
             var result = slot.CanAdd(item, itemsLeftToAdd, considerOutputSlots);
             if (result.Item1)
             {
@@ -52,18 +66,17 @@ public class InventoryManagerV2 : BaseGameObject
 
     private bool CanAddAllItems(Dictionary<Item, int> inputItemQuantities, bool considerOutputSlots = false)
     {
-        List<InventorySlotScriptable> transaction = new List<InventorySlotScriptable>();
+        List<InventorySlot> transaction = new List<InventorySlot>();
         slots.ForEach((slotObj) =>
         {
-            var slot = slotObj.GetComponent<InventorySlot>();
+            var slot = slotObj.GetComponent<InventorySlotUI>().slot;
             if (slot.slotType == SlotType.INPUT || slot.slotType == SlotType.IN_OUT || considerOutputSlots)
             {
-                var fakeSlot = new InventorySlotScriptable
-                {
-                    heldItem = slot.heldItem,
-                    quantity = slot.quantity,
-                    maxStackSize = slot.maxStackSize
-                };
+                var fakeSlot = ScriptableObject.CreateInstance<InventorySlot>();
+                fakeSlot.heldItem = slot.heldItem;
+                fakeSlot.quantity = slot.quantity;
+                fakeSlot.maxStackSize = slot.maxStackSize;
+                fakeSlot.locked = slot.locked;
                 transaction.Add(fakeSlot);
             }
         });
@@ -88,11 +101,11 @@ public class InventoryManagerV2 : BaseGameObject
         return true;
     }
 
-    private bool AddItem(Item item, bool considerOutputSlots=false,  bool fireEventsOnAdd=true)
+    public bool AddItem(Item item, bool considerOutputSlots=false,  bool fireEventsOnAdd=true)
     {
         foreach (var slotObj in slots)
         {
-            InventorySlot slot = slotObj.GetComponent<InventorySlot>();
+            InventorySlot slot = slotObj.GetComponent<InventorySlotUI>().slot;
             if (slot.slotType == SlotType.INPUT || slot.slotType == SlotType.IN_OUT || considerOutputSlots)
             {
                 if (slot.AttemptAdd(item))
@@ -137,7 +150,7 @@ public class InventoryManagerV2 : BaseGameObject
 
     */
 
-    private bool HasItem(Item item, int quantityNeeded = 1, bool considerInputSlots = false)
+    public bool HasItem(Item item, int quantityNeeded = 1, bool considerInputSlots = false)
     {
 
         Dictionary<int, int> amountLookup = new Dictionary<int, int>();
@@ -145,7 +158,7 @@ public class InventoryManagerV2 : BaseGameObject
 
         foreach (var slotObj in slots)
         {
-            InventorySlot slot = slotObj.GetComponent<InventorySlot>();
+            InventorySlot slot = slotObj.GetComponent<InventorySlotUI>().slot ;
             amountLookup[item.id] += slot.HasItem(item, considerInputSlots);
         }
 
@@ -173,7 +186,7 @@ public class InventoryManagerV2 : BaseGameObject
     {
         foreach (var slotObj in slots)
         {
-            InventorySlot slot = slotObj.GetComponent<InventorySlot>();
+            InventorySlot slot = slotObj.GetComponent<InventorySlotUI>().slot;
             if (slot.slotType == SlotType.OUTPUT || slot.slotType == SlotType.IN_OUT || considerInputSlots)
             {
                 var temp = slot.AttemptRemove(item);
@@ -191,7 +204,7 @@ public class InventoryManagerV2 : BaseGameObject
     }
 
 
-    private List<Item> RemoveMultipleSingleItem(Item item, int quantityNeeded = 1, bool considerInputSlots = false, bool fireEventOnRemove = true)
+    public List<Item> RemoveMultipleSingleItem(Item item, int quantityNeeded = 1, bool considerInputSlots = false, bool fireEventOnRemove = true)
     {
         // Note User should call has items before trying to remove any items
         List<Item> removed = new List<Item>();
@@ -229,7 +242,7 @@ public class InventoryManagerV2 : BaseGameObject
         //Maybe will return something
         foreach (var slotObj in slots)
         {
-            var slot = slotObj.GetComponent<InventorySlot>();
+            var slot = slotObj.GetComponent<InventorySlotUI>().slot;
             slot.ForceClearSlot();
         }
     }
@@ -240,7 +253,7 @@ public class InventoryManagerV2 : BaseGameObject
     {
         foreach(var slotObj in slots)
         {
-            var slot = slotObj.GetComponent<InventorySlot>();
+            var slot = slotObj.GetComponent<InventorySlotUI>().slot;
             if(slot.slotType == type || type == SlotType.IN_OUT)
             {
                 slot.locked = true;
@@ -252,7 +265,7 @@ public class InventoryManagerV2 : BaseGameObject
     {
         foreach (var slotObj in slots)
         {
-            var slot = slotObj.GetComponent<InventorySlot>();
+            var slot = slotObj.GetComponent<InventorySlotUI>().slot;
             if (slot.slotType == type || type == SlotType.IN_OUT)
             {
                 slot.locked = false;

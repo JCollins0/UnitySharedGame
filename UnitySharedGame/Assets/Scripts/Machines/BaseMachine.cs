@@ -8,14 +8,17 @@ using UnityEngine.UI;
 public class BaseMachine : BaseGameObject
 {
     public List<CraftingRecipe> validRecipes = new List<CraftingRecipe>();
-    public GameObject UIParentContainer;
+
+    // Slots are defined by scriptable objects in editor
+    public List<InventorySlot> slots;
+    private MachineInventoryUIManager machineInventoryUIManager;
+
     private GameObject MachineUIContainer;
     
     public InventoryManagerV2 playerInventory;
     public RecipePanel recipePanel; //maybe make static
 
-    private InventoryManagerV2 inputSlotManager;
-    private InventoryManagerV2 outputSlotManager;
+   
 
     private ProgressBar progressBar;
     private Button completeCookButton;
@@ -25,13 +28,13 @@ public class BaseMachine : BaseGameObject
     private bool playerNearby;
     private bool activeState;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
         MachineUIContainer = GameObject.Find("MachineInventoryContainer");
-        // Unique per machine, may need to move these
-        inputSlotManager = GameObject.Find("InputSlots").GetComponent<InventoryManagerV2>();
-        outputSlotManager = GameObject.Find("OutputSlots").GetComponent<InventoryManagerV2>();
+        machineInventoryUIManager = GameObject.Find("MachineUI").GetComponent<MachineInventoryUIManager>();
 
         progressBar = GameObject.Find("ProgressBar").GetComponent<ProgressBar>();
         completeCookButton = GameObject.Find("CompleteCookButton").GetComponent<Button>();
@@ -43,8 +46,8 @@ public class BaseMachine : BaseGameObject
             int cookProgress = progressBar.currentValue;
             Dictionary<Item,int> output = recipe.GetRecipeOutputBasedOnCookTime(cookProgress);
             // remove input and move to output
-            if(outputSlotManager.AddAllItems(output, considerOutputSlots: true)){
-                inputSlotManager.ForceClearSlots();
+            if(machineInventoryUIManager.outputSlotManager.AddAllItems(output, considerOutputSlots: true)){
+                machineInventoryUIManager.inputSlotManager.ForceClearSlots();
                 // reset stuff
                 currentRecipe = null;
                 UpdateCookButton();
@@ -60,6 +63,7 @@ public class BaseMachine : BaseGameObject
 
     private void OnInventorySlotClicked(InventorySlot slot)
     {
+        Debug.Log("Listening For Event");
         Tuple<Item, int> output = slot.PeekOutput();
         Dictionary<Item, int> outputDict = new Dictionary<Item, int>
         {
@@ -79,7 +83,7 @@ public class BaseMachine : BaseGameObject
         Dictionary<Item, int> inputItems = recipe.GetInputDictionary();
         if (playerInventory.HasAllItems(inputItems))
         {
-            if (inputSlotManager.AddAllItems(inputItems))
+            if (machineInventoryUIManager.inputSlotManager.AddAllItems(inputItems))
             {
 
                 playerInventory.RemoveMultipleItems(inputItems);
@@ -100,20 +104,25 @@ public class BaseMachine : BaseGameObject
         completeCookButton.enabled = this.currentRecipe != null;
     }
 
+    private void OpenCloseUI()
+    {
+        activeState = !activeState;
+        MachineUIContainer.SetActive(activeState);
+
+        if (activeState)
+        {
+            recipePanel.AddRecipes(validRecipes);
+            machineInventoryUIManager.SetSlots(slots);
+        }
+    }
+
+
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E) && playerNearby)
         {
-            activeState = !activeState;
-            UIParentContainer.SetActive(activeState);
-            MachineUIContainer.SetActive(activeState);
-
-            if (activeState)
-            {
-                recipePanel.AddRecipes(validRecipes);
-            }
-            
+            OpenCloseUI();
         }
     }
 
