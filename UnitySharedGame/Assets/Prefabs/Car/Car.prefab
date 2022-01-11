@@ -341,7 +341,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4486621758029917942}
   - component: {fileID: 4486621758029917937}
-  m_Layer: 0
+  - component: {fileID: 290765919209064353}
+  - component: {fileID: 5871825036126253191}
+  - component: {fileID: 1398677693380796699}
+  - component: {fileID: 1488073389236247854}
+  m_Layer: 6
   m_Name: Car
   m_TagString: Car
   m_Icon: {fileID: 0}
@@ -416,6 +420,74 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &290765919209064353
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4486621758029917936}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 0.0001
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!70 &5871825036126253191
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4486621758029917936}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.00000030406483, y: -0.115986384}
+  m_Size: {x: 1.0738125, y: 0.59933937}
+  m_Direction: 1
+--- !u!114 &1398677693380796699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4486621758029917936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9782db1c3f9d04d97a33c75bcdc7b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carSprites:
+  - {fileID: 6947908207949566423, guid: d308e035d7377fb409246aa43848f34c, type: 3}
+  - {fileID: -592538902078482287, guid: d308e035d7377fb409246aa43848f34c, type: 3}
+  - {fileID: -931598462713293962, guid: d308e035d7377fb409246aa43848f34c, type: 3}
+  - {fileID: -6902476039500356962, guid: d308e035d7377fb409246aa43848f34c, type: 3}
+  - {fileID: 6946151450223818293, guid: d308e035d7377fb409246aa43848f34c, type: 3}
+  - {fileID: -3726662394787163890, guid: d308e035d7377fb409246aa43848f34c, type: 3}
+--- !u!114 &1488073389236247854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4486621758029917936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 999d05d9d9dc60e42876fcc134a86b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5125517279704883814
 GameObject:
   m_ObjectHideFlags: 0
