@@ -48,6 +48,5 @@ public class ProgressBar : MonoBehaviour
     void FixedUpdate()
     {
         fillBarTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, ((float)currentValue / maxValue) * myTransform.rect.width);
-        currentValue = (currentValue + 1) % maxValue;
     }
 }

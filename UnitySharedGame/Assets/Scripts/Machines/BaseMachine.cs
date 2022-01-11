@@ -20,7 +20,7 @@ public class BaseMachine : BaseGameObject
 
    
 
-    private ProgressBar progressBar;
+    //private ProgressBar progressBar;
     private Button completeCookButton;
 
     private CraftingRecipe currentRecipe;
@@ -28,7 +28,9 @@ public class BaseMachine : BaseGameObject
     private bool playerNearby;
     private bool activeState;
 
+    private bool isCrafting;
 
+    public int currentCookProgress;
 
     // Start is called before the first frame update
     void Start()
@@ -36,29 +38,38 @@ public class BaseMachine : BaseGameObject
         MachineUIContainer = GameObject.Find("MachineInventoryContainer");
         machineInventoryUIManager = GameObject.Find("MachineUI").GetComponent<MachineInventoryUIManager>();
 
-        progressBar = GameObject.Find("ProgressBar").GetComponent<ProgressBar>();
         completeCookButton = GameObject.Find("CompleteCookButton").GetComponent<Button>();
-        completeCookButton.onClick.AddListener(() =>
-        {
-            // get current recipe,
-            CraftingRecipe recipe = this.currentRecipe;
-            // get output based on progress time
-            int cookProgress = progressBar.currentValue;
-            Dictionary<Item,int> output = recipe.GetRecipeOutputBasedOnCookTime(cookProgress);
-            // remove input and move to output
-            if(machineInventoryUIManager.outputSlotManager.AddAllItems(output, considerOutputSlots: true)){
-                machineInventoryUIManager.inputSlotManager.ForceClearSlots();
-                // reset stuff
-                currentRecipe = null;
-                UpdateCookButton();
-            }
-        });
+        completeCookButton.onClick.AddListener(CompleteCraft);
 
         UpdateCookButton();
         //internalUI.SetActive(false);
         //UIParentContainer.SetActive(false);
         GameEvents.current.onInventorySlotClick += OnInventorySlotClicked;
         GameEvents.current.onMakeRecipeClick += MoveIngredientsFromPlayerToMachine;
+    }
+
+    private void CompleteCraft()
+    {
+        // get current recipe,
+        CraftingRecipe recipe = this.currentRecipe;
+        // get output based on progress time
+
+        Dictionary<Item, int> output = recipe.GetRecipeOutputBasedOnCookTime(currentCookProgress);
+        // remove input and move to output
+        if (machineInventoryUIManager.outputSlotManager.AddAllItems(output, considerOutputSlots: true))
+        {
+            machineInventoryUIManager.inputSlotManager.ForceClearSlots();
+            // reset stuff
+            ResetCraft();
+            UpdateCookButton();
+        }
+    }
+
+    private void ResetCraft()
+    {
+        currentRecipe = null;
+        isCrafting = false;
+        currentCookProgress = 0;
     }
 
     private void OnInventorySlotClicked(InventorySlot slot)
@@ -88,11 +99,11 @@ public class BaseMachine : BaseGameObject
 
                 playerInventory.RemoveMultipleItems(inputItems);
                 Debug.LogFormat("Making Recipe {0}", recipe);
-                
-                //Dispatch Craft
-                progressBar.LoadRecipe(recipe);
-                this.currentRecipe = recipe;
 
+                //Dispatch Craft
+                machineInventoryUIManager.SetProgressBarRecipe(recipe);
+                this.currentRecipe = recipe;
+                isCrafting = true;
                 UpdateCookButton();
             }
         }
@@ -124,6 +135,28 @@ public class BaseMachine : BaseGameObject
         {
             OpenCloseUI();
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isCrafting)
+        {
+            if (currentCookProgress < 100)
+            {
+                currentCookProgress++;
+            }
+
+            if(currentCookProgress == 100)
+            {
+                CompleteCraft();
+            }
+        }
+
+        if (activeState)
+        {
+            machineInventoryUIManager.UpdateProgressBar(currentCookProgress);
+        }
+
     }
 
     private void OnDestroy()

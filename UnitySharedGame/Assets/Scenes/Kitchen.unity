@@ -4174,6 +4174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputSlotsParent: {fileID: 5831901272265543007}
   outputSlotsParent: {fileID: 5831901272211258487}
+  progressBar: {fileID: 1501996093711450316}
   slotUIPrefab: {fileID: 2812963991900554032, guid: 8b08400128e0aff4ca3b6676c0ca9515, type: 3}
   inputSlotManager: {fileID: 5626407601241824843}
   outputSlotManager: {fileID: 8564454327861882147}
@@ -6969,7 +6970,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3508849083493623025}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

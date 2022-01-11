@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
@@ -10,6 +9,15 @@ public class CraftingRecipe : ScriptableObject
     public string recipeName;
     public List<Item> inputItemsList;
     private Dictionary<Item, int> inputItems;
+
+    public bool hasProcessingPenality;
+    public int minProcessingTime;
+    public int maxProcessingTime;
+
+    public List<Item> outputItemsList;
+    public List<Item> underCookedItemsList;
+    public List<Item> overCookedItemsList;
+    private Dictionary<ItemStatus, Dictionary<Item, int>> outputItems;
 
     public Dictionary<Item, int> GetInputDictionary()
     {
@@ -30,21 +38,45 @@ public class CraftingRecipe : ScriptableObject
         return inputItems;
     }
 
+    public Dictionary<ItemStatus, Dictionary<Item, int>> GetOutputDictionary()
+    {
+        if(outputItems == null)
+        {
+            outputItems = new Dictionary<ItemStatus, Dictionary<Item, int>>();
+
+            outputItems[ItemStatus.COOKED] = FillOutputItemDictionary(outputItemsList, new Dictionary<Item, int>());
+            if (hasProcessingPenality)
+            {
+                outputItems[ItemStatus.RAW] = FillOutputItemDictionary(underCookedItemsList, new Dictionary<Item, int>());
+                outputItems[ItemStatus.BURNT] = FillOutputItemDictionary(overCookedItemsList, new Dictionary<Item, int>());
+            }
+        }
+
+        return outputItems;
+    }
+
+    private Dictionary<Item, int> FillOutputItemDictionary(List<Item> items, Dictionary<Item, int> outputDict)
+    {
+        foreach (var item in items)
+        {
+            if (!outputDict.ContainsKey(item))
+            {
+                outputDict[item] = 0;
+            }
+            outputDict[item]++;
+        }
+        return outputDict;
+    }
+
     void Start()
     {
     }
 
-    public bool hasProcessingPenality;
-    public int minProcessingTime;
-    public int maxProcessingTime;
-
-    public Item outputItem;
-    public int outputQuantity;
-    
     public override string ToString()
     {
         GetInputDictionary();
-        return string.Format("[MCR-({6}): {0}x{1} -> [{4}-{7}-{5}] -> {2}x{3}]", inputItems.Keys, inputItems.Values, outputItem, outputQuantity, minProcessingTime,maxProcessingTime, id, hasProcessingPenality);
+        GetOutputDictionary();
+        return string.Format("[MCR-({6}): {0}x{1} -> [{4}-{7}-{5}] -> {2}x{3}]", inputItems.Keys, inputItems.Values, outputItems[ItemStatus.COOKED].Keys, outputItems[ItemStatus.COOKED].Values, minProcessingTime,maxProcessingTime, id, hasProcessingPenality);
     }
 
     public string GetIngredientsText()
@@ -52,7 +84,13 @@ public class CraftingRecipe : ScriptableObject
         StringBuilder builder = new StringBuilder();
 
         builder.Append("Makes:").AppendLine();
-        builder.AppendFormat("{0}x {1}", outputQuantity, outputItem.itemName).AppendLine();
+
+        foreach(Item outputItem in GetOutputDictionary()[ItemStatus.COOKED].Keys)
+        {
+            int outputQuantity = outputItems[ItemStatus.COOKED][outputItem];
+            builder.AppendFormat("{0}x {1}", outputQuantity, outputItem.itemName).AppendLine();
+        }
+
         builder.AppendLine();
         builder.Append("Using:").AppendLine();
         foreach (Item item in GetInputDictionary().Keys)
@@ -64,21 +102,18 @@ public class CraftingRecipe : ScriptableObject
 
     public Dictionary<Item,int> GetRecipeOutputBasedOnCookTime(int cookProgress)
     {
-        Dictionary<Item, int> output = new Dictionary<Item, int>();
         if (hasProcessingPenality)
         {
             if(cookProgress < minProcessingTime)
             {
-                output.Add(outputItem, outputQuantity);//todo change
-                return output;
+                return outputItems[ItemStatus.RAW];
             }
             if(cookProgress > maxProcessingTime)
             {
-                output.Add(outputItem, outputQuantity);
-                return output; //todo change
+                return outputItems[ItemStatus.BURNT];
             }
         }
-        output.Add(outputItem, outputQuantity);
-        return output;
+
+        return outputItems[ItemStatus.COOKED];
     }
 }

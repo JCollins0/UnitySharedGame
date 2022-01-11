@@ -7,6 +7,7 @@ public class MachineInventoryUIManager : MonoBehaviour
 {
     public GameObject inputSlotsParent;
     public GameObject outputSlotsParent;
+    public ProgressBar progressBar;
 
     public GameObject slotUIPrefab;
 
@@ -49,6 +50,16 @@ public class MachineInventoryUIManager : MonoBehaviour
             }
 
         }
+    }
+
+    public void SetProgressBarRecipe(CraftingRecipe recipe)
+    {
+        progressBar.LoadRecipe(recipe);
+    }
+
+    public void UpdateProgressBar(int value)
+    {
+        progressBar.currentValue = value;
     }
 
 }

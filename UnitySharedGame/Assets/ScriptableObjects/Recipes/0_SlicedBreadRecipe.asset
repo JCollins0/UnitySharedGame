@@ -19,5 +19,7 @@ MonoBehaviour:
   hasProcessingPenality: 0
   minProcessingTime: 0
   maxProcessingTime: 0
-  outputItem: {fileID: 11400000, guid: 71e8a7b813ad13e4bae3fadff250f636, type: 2}
-  outputQuantity: 1
+  outputItemsList:
+  - {fileID: 11400000, guid: 71e8a7b813ad13e4bae3fadff250f636, type: 2}
+  underCookedItemsList: []
+  overCookedItemsList: []
