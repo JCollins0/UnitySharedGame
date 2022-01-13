@@ -1,22 +1,40 @@
 fileFormatVersion: 2
-guid: a6f3c9f00ba1e7e4ea2763794f670b4f
+guid: 17ea381ff30c5e6438242bf432ab4a3b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5681758698639036293
-    second: boiled_egg
+      213: 7183089947921660599
+    second: frying_pan
   - first:
-      213: -5651521147247559818
-    second: egg
+      213: 7699094869988531632
+    second: frying_pan_dirty
   - first:
-      213: -2055151899186817682
-    second: scrambled_egg
+      213: 7798348552630579942
+    second: pot
   - first:
-      213: -1424252881249458490
-    second: sunny_side_egg
+      213: 1925392688257827753
+    second: pot_with_water
   - first:
-      213: -4617260901525321462
-    second: omlette
+      213: -4771580525354391374
+    second: dirty_pot
+  - first:
+      213: 1730072420907099705
+    second: cake_pan
+  - first:
+      213: 1861927933840466581
+    second: cake_pan_dirty
+  - first:
+      213: -3182637252750740318
+    second: baking_tray
+  - first:
+      213: -3250273907619241100
+    second: baking_tray_dirty
+  - first:
+      213: -7969265492805927041
+    second: bakeware
+  - first:
+      213: -3632071510031828967
+    second: bakeware_dirty
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -130,106 +148,232 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: boiled_egg
+      name: frying_pan
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 224
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b70722c11965621b0800000000000000
-      internalID: -5681758698639036293
+      spriteID: 7babc8fff367fa360800000000000000
+      internalID: 7183089947921660599
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: egg
+      name: frying_pan_dirty
       rect:
         serializedVersion: 2
         x: 32
-        y: 0
+        y: 224
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 67b73b9a573c191b0800000000000000
-      internalID: -5651521147247559818
+      spriteID: 0bdd2b12efda8da60800000000000000
+      internalID: 7699094869988531632
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: scrambled_egg
+      name: pot
       rect:
         serializedVersion: 2
         x: 64
-        y: 0
+        y: 224
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e6510818c32aa73e0800000000000000
-      internalID: -2055151899186817682
+      spriteID: 6e23a32f0bc493c60800000000000000
+      internalID: 7798348552630579942
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunny_side_egg
+      name: pot_with_water
       rect:
         serializedVersion: 2
         x: 96
-        y: 0
+        y: 224
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6c6acceec890c3ce0800000000000000
-      internalID: -1424252881249458490
+      spriteID: 9a30eb4e27e58ba10800000000000000
+      internalID: 1925392688257827753
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: omlette
+      name: dirty_pot
       rect:
         serializedVersion: 2
         x: 128
-        y: 0
+        y: 224
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a0988416ca13cefb0800000000000000
-      internalID: -4617260901525321462
+      spriteID: 2b864190bc0f7cdb0800000000000000
+      internalID: -4771580525354391374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cake_pan
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9362ed353b3720810800000000000000
+      internalID: 1730072420907099705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cake_pan_dirty
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59220f54795e6d910800000000000000
+      internalID: 1861927933840466581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: baking_tray
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a4fddce74005d3d0800000000000000
+      internalID: -3182637252750740318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: baking_tray_dirty
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47362a90a15b4e2d0800000000000000
+      internalID: -3250273907619241100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bakeware
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7f368cd14b776190800000000000000
+      internalID: -7969265492805927041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bakeware_dirty
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9187cb5843a489dc0800000000000000
+      internalID: -3632071510031828967
       vertices: []
       indices: 
       edges: []

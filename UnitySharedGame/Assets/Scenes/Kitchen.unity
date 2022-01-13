@@ -3475,11 +3475,13 @@ MonoBehaviour:
   objName: Toaster
   validRecipes:
   - {fileID: 11400000, guid: d269906943b20164595c1c3b13d7861c, type: 2}
+  - {fileID: 11400000, guid: c1b99d5e747315a48aebdfbc0587b85b, type: 2}
   slots:
   - {fileID: 11400000, guid: 2999dd235d5c5c441911c2d84ff38d1b, type: 2}
   - {fileID: 11400000, guid: 26858a44ab5268443a5f8ece43e3f6b9, type: 2}
   playerInventory: {fileID: 436906805}
   recipePanel: {fileID: 1154303479}
+  currentCookProgress: 0
 --- !u!61 &926201487
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6970,7 +6972,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3508849083493623025}
   m_Direction: 0
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

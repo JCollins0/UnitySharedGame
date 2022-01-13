@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2486bd7b43fdac54bb1198fcf7f5197f, type: 3}
-  m_Name: 100_FryingPan
+  m_Name: 101_FryingPanDirty
   m_EditorClassIdentifier: 
-  id: 100
-  itemName: Frying Pan
+  id: 101
+  itemName: Dirty Frying Pan
   buyPrice: 0
   sellPrice: 0
   maxStackSize: 1
-  sprite: {fileID: 7183089947921660599, guid: 17ea381ff30c5e6438242bf432ab4a3b, type: 3}
+  sprite: {fileID: 7699094869988531632, guid: 17ea381ff30c5e6438242bf432ab4a3b, type: 3}
