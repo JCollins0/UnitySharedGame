@@ -2,12 +2,12 @@ using UnityEngine;
 
 public enum ItemStatus
 {
-    NA=-1, NOT_SET, RAW, COOKED, BURNT
+    NA=-1, NOT_SET, RAW, PROCESSED, COOKED, BURNT
 }
 
 public enum ItemType
 {
-    ITEM, FOOD
+    ITEM, FOOD, COOK_TOOL
 }
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Items/Item")]
@@ -17,9 +17,9 @@ public class Item : ScriptableObject
     public string itemName;
     public int buyPrice;
     public int sellPrice;
-    virtual public ItemStatus Status { get => ItemStatus.NA; }
+    public ItemStatus status = ItemStatus.NA;
     virtual public ItemType Type { get => ItemType.ITEM; }
-    public int maxStackSize = 1;
+    public int maxStackSize;
     public Sprite sprite;
     
     public override bool Equals(object other)

@@ -21,7 +21,7 @@ MonoBehaviour:
   minProcessingTime: 0
   maxProcessingTime: 0
   outputItemsList:
-  - {fileID: 11400000, guid: 3063ebf1fc8a2134ca4ff7b802d0ab68, type: 2}
+  - {fileID: 11400000, guid: c8d4cd270ffa3bd40a4d890f868f5c00, type: 2}
   - {fileID: 11400000, guid: 78ecf5aae824b1f428e4cdb91c3c4bc5, type: 2}
   underCookedItemsList: []
   overCookedItemsList: []

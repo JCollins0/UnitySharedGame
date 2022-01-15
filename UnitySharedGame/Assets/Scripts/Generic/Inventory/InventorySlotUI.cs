@@ -8,7 +8,7 @@ public class InventorySlotUI : MonoBehaviour
 {
     // UI
     public Text quantityLabel;
-    public Text itemNameLabel;
+    public Tooltip tooltip;
     public Image image;
 
     public InventorySlot slot;
@@ -19,7 +19,6 @@ public class InventorySlotUI : MonoBehaviour
     {
         quantityLabel.text = "";
         image = GetComponent<Image>();
-        itemNameLabel.text = "";
         myButtonComponent = this.GetComponent<Button>();
     }
 
@@ -35,16 +34,16 @@ public class InventorySlotUI : MonoBehaviour
     {
         if (slot)
         {
-            if (slot.heldItem)
+            if (slot.heldItem != null)
             {
                 image.sprite = slot.heldItem.sprite;
-                itemNameLabel.text = slot.heldItem.itemName;
+                tooltip.message = slot.heldItem.itemName;
                 quantityLabel.text = slot.quantity.ToString();
             }
-            else if (image.sprite != null)
+            else
             {
                 image.sprite = null;
-                itemNameLabel.text = "";
+                tooltip.message = null;
                 quantityLabel.text = "";
             }
         }

@@ -24,4 +24,4 @@ MonoBehaviour:
   underCookedItemsList:
   - {fileID: 11400000, guid: 71e8a7b813ad13e4bae3fadff250f636, type: 2}
   overCookedItemsList:
-  - {fileID: 11400000, guid: 4b21e638dc727c94d8d9885f4357beb9, type: 2}
+  - {fileID: 11400000, guid: 2bb631b41027b6e42a762b6e6a505e27, type: 2}
