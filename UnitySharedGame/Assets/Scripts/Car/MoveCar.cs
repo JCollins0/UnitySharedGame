@@ -83,10 +83,9 @@ public class MoveCar : MonoBehaviour
 
     }
 
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision);
+        //Debug.Log(collision);
         //check if food is correct
         //if yes, food delivered = true
         //if no, food is incorrect, basically do nothing and car stays put
@@ -94,16 +93,26 @@ public class MoveCar : MonoBehaviour
         {
             foodDelivered = true;
         }
+        
         if (collision.gameObject.tag == "Car")
         {
-            clearToMove = false; //do not move the car
-            rb2D.velocity = new Vector2(0, 0); //stopping the car
-            Debug.Log("Hit another car, stopping");
+            if (CarPos.x >= -0.5f)
+            {
+                clearToMove = true;
+            }
+            else
+            {
+                clearToMove = false; //do not move the car
+                rb2D.velocity = new Vector2(0, 0); //stopping the car
+                Debug.Log("Hit another car, stopping");
+            }
+            
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
+
         if (collision.gameObject.tag == "Car")
         {
             clearToMove = true; //car can move again
