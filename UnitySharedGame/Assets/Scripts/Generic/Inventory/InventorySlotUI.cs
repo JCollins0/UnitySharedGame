@@ -13,6 +13,7 @@ public class InventorySlotUI : MonoBehaviour
 
     public InventorySlot slot;
     private Button myButtonComponent;
+    public RectTransform layout;
     
     // Start is called before the first frame update
     void Start()
@@ -39,12 +40,14 @@ public class InventorySlotUI : MonoBehaviour
                 image.sprite = slot.heldItem.sprite;
                 tooltip.message = slot.heldItem.itemName;
                 quantityLabel.text = slot.quantity.ToString();
+                layout.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,quantityLabel.preferredWidth + 8f);
             }
             else
             {
                 image.sprite = null;
                 tooltip.message = null;
                 quantityLabel.text = "";
+                layout.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0);
             }
         }
         else
