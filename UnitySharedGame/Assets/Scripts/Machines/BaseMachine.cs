@@ -51,6 +51,10 @@ public class BaseMachine : BaseGameObject
 
     private void CompleteCraft()
     {
+        if (!activeState)
+        {
+            return;
+        }
         // get current recipe,
         CraftingRecipe recipe = this.currentRecipe;
         // get output based on progress time
@@ -75,7 +79,14 @@ public class BaseMachine : BaseGameObject
 
     private void OnInventorySlotClicked(InventorySlot slot)
     {
-        Debug.Log("Listening For Event");
+        if (!activeState)
+        {
+            return;
+        }
+        // TODO: Rethink how this is done, 
+        // Currently each machine will fire this event even though the shared UI is showing one particular view
+        // Also separate note: the progress bar is not updating properly
+        Debug.LogFormat("Listening For Event {0}", slot.ToString());
         Tuple<Item, int> output = slot.PeekOutput();
         Dictionary<Item, int> outputDict = new Dictionary<Item, int>
         {
@@ -91,7 +102,11 @@ public class BaseMachine : BaseGameObject
 
     private void MoveIngredientsFromPlayerToMachine(CraftingRecipe recipe)
     {
-
+        if (!activeState)
+        {
+            return;
+        }
+        
         Dictionary<Item, int> inputItems = recipe.GetInputDictionary();
         if (playerInventory.HasAllItems(inputItems))
         {
@@ -108,6 +123,7 @@ public class BaseMachine : BaseGameObject
                 UpdateCookButton();
             }
         }
+
     }
 
 
@@ -123,6 +139,7 @@ public class BaseMachine : BaseGameObject
 
         if (activeState)
         {
+            machineInventoryUIManager.SetProgressBarRecipe(currentRecipe);
             recipePanel.AddRecipes(validRecipes);
             machineInventoryUIManager.SetSlots(slots);
         }
@@ -140,6 +157,7 @@ public class BaseMachine : BaseGameObject
 
     private void FixedUpdate()
     {
+       
         if (isCrafting)
         {
             if (currentCookProgress < 100)

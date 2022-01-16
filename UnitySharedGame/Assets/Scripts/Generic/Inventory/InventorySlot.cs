@@ -213,4 +213,9 @@ public class InventorySlot : ScriptableObject
         }
         return false;
     }
+
+    public override string ToString()
+    {
+        return $"{slotType} {heldItem} {quantity}";
+    }
 }

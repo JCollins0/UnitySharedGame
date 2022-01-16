@@ -20,7 +20,7 @@ public class ProgressBar : MonoBehaviour
 
     public void LoadRecipe(CraftingRecipe recipe)
     {
-        hasProcessingPenality = recipe.hasProcessingPenality;
+        hasProcessingPenality = recipe?.hasProcessingPenality ?? false;
         minLine.SetActive(hasProcessingPenality);
         maxLine.SetActive(hasProcessingPenality);
         if (hasProcessingPenality)

@@ -33,6 +33,7 @@ public class RecipePanel : MonoBehaviour
         {
             Destroy(selectorContent.transform.GetChild(i).gameObject);
         }
+        recipeInfoPanel.SetActive(false);
     }
 
     public void AddRecipes(List<CraftingRecipe> validRecipes)
