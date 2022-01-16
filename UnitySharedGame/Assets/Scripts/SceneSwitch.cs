@@ -6,53 +6,68 @@ using UnityEngine.SceneManagement;
 public class SceneSwitch : MonoBehaviour
 {
     GameObject PlayObj;
-    public MoveToScene ChangeScene = new MoveToScene();
-    public enum MoveToScene { Kitchen, GreenHouse, ColdStorage };
+    public MoveToScene ChangeScene;
+    public enum MoveToScene { Kitchen=0, GreenHouse, ColdStorage, Outside };
 
-
-    // Start is called before the first frame update
-    void Start()
+    public static string GetSceneName(MoveToScene moveToScene)
     {
-
-   
+        switch (moveToScene)
+        {
+            case MoveToScene.Kitchen:
+                return "Kitchen";
+            case MoveToScene.GreenHouse:
+                return "GreenHouse";
+            case MoveToScene.ColdStorage:
+                return "ColdStorage";
+            case MoveToScene.Outside:
+                return "Outside";
+            default:
+                return "InvalidScene";
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadSceneAsync((int)ChangeScene);
+        switch (ChangeScene)
+        {
+            case MoveToScene.Kitchen:
+                if (currentSceneName.Equals(GetSceneName(MoveToScene.GreenHouse)))
+                {
+                    SetPlayerPosition(-5.5f, -0.75f);
+                }
+                else if (currentSceneName.Equals(GetSceneName(MoveToScene.ColdStorage)))
+                {
+                    SetPlayerPosition(6.5f, 5f);
+                }
+                else if (currentSceneName.Equals(GetSceneName(MoveToScene.Outside)))
+                {
+                    SetPlayerPosition(.5f, -2f);
+                }
+                break;
+            case MoveToScene.GreenHouse:
+                SetPlayerPosition(14f, 4.25f);
+                break;
+            case MoveToScene.Outside:
+                SetPlayerPosition(-0.5f, 0.8f);
+                break;
+            case MoveToScene.ColdStorage:
+                SetPlayerPosition(-6.5f, -4f);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void SetPlayerPosition(float x, float y)
+    {
         PlayObj = GameObject.Find("Chef_Player");
         Vector3 PlyrPos = PlayObj.gameObject.transform.position;
-        Scene CurrentScene = SceneManager.GetActiveScene();
-           if (ChangeScene.ToString() == "Kitchen") {
-
-               if (CurrentScene.name == "GreenHouse")
-               {
-                   PlyrPos.x = -5.5f;
-                   PlyrPos.y = -0.75f;
-               }
-               else if(CurrentScene.name == "ColdStorage")
-               { 
-                   PlyrPos.x = 6.5f;
-                   PlyrPos.y = -0.8f;
-               }
-               SceneManager.LoadScene(0);  
-               Debug.Log(PlyrPos.x + "," + PlyrPos.y);
-           }
-           else if (ChangeScene.ToString() == "GreenHouse")
-           {
-               SceneManager.LoadScene(1);
-               PlyrPos.x = 14f;
-               PlyrPos.y = 4.25f;
-           }
-           else if (ChangeScene.ToString() == "ColdStorage")
-           {
-               SceneManager.LoadScene(2);
-           }
+        PlyrPos.x = x;
+        PlyrPos.y = y;
+        Debug.Log(PlyrPos.x + "," + PlyrPos.y);
         PlayObj.gameObject.transform.position = PlyrPos;
     }
 }
