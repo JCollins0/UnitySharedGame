@@ -7,9 +7,9 @@ public class RecipePanel : MonoBehaviour
 {
     public GameObject selectorPrefab;
 
-    private GameObject selectorContent;
-    private GameObject recipeInfoPanel;
-    private Button addItemsButton;
+    public GameObject selectorContent;
+    public GameObject recipeInfoPanel;
+    public Button addItemsButton;
 
     private InventoryManagerV2 playerInventory;
 
@@ -17,18 +17,12 @@ public class RecipePanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var machineUI = GameObject.Find("MachineInventoryContainer");
-        machineUI.SetActive(true);
-        selectorContent = GameObject.Find("RecipePanel/RecipeSelectPanel/RecipeSelectorView/Viewport/Content");
-        addItemsButton = GameObject.Find("RecipePanel/RecipeInfoPanel/AddItemsButton").GetComponent<Button>();
-        recipeInfoPanel = GameObject.Find("RecipePanel/RecipeInfoPanel");
         playerInventory = GameObject.Find("PlayerInventoryContainer").GetComponent<InventoryManagerV2>();
 
         addItemsButton.onClick.AddListener(()=>GameEvents.current.MakeRecipeClick(recipeInfoPanel.GetComponent<RecipeMetadata>().recipe));
 
         GameEvents.current.onInventoryChange += OnInventoryChanged;
         recipeInfoPanel.SetActive(false);
-        machineUI.SetActive(false);
     }
 
 

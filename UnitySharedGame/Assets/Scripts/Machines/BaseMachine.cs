@@ -13,7 +13,7 @@ public class BaseMachine : BaseGameObject
     public List<InventorySlot> slots;
     private MachineInventoryUIManager machineInventoryUIManager;
 
-    private GameObject MachineUIContainer;
+    //private GameObject MachineUIContainer;
     
     public InventoryManagerV2 playerInventory;
     public RecipePanel recipePanel; //maybe make static
@@ -35,7 +35,7 @@ public class BaseMachine : BaseGameObject
     // Start is called before the first frame update
     void Start()
     {
-        MachineUIContainer = GameObject.Find("MachineInventoryContainer");
+        MachineInventoryUIContainer.ActivateMachineInventoryUI();
         machineInventoryUIManager = GameObject.Find("MachineUI").GetComponent<MachineInventoryUIManager>();
 
         completeCookButton = GameObject.Find("CompleteCookButton").GetComponent<Button>();
@@ -46,6 +46,7 @@ public class BaseMachine : BaseGameObject
         //UIParentContainer.SetActive(false);
         GameEvents.current.onInventorySlotClick += OnInventorySlotClicked;
         GameEvents.current.onMakeRecipeClick += MoveIngredientsFromPlayerToMachine;
+        MachineInventoryUIContainer.DeActivateMachineInventoryUI();
     }
 
     private void CompleteCraft()
@@ -118,7 +119,7 @@ public class BaseMachine : BaseGameObject
     private void OpenCloseUI()
     {
         activeState = !activeState;
-        MachineUIContainer.SetActive(activeState);
+        MachineInventoryUIContainer.UpdateState(activeState);
 
         if (activeState)
         {

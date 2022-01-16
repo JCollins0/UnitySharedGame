@@ -13,7 +13,7 @@ public class InventorySlot : ScriptableObject
     // Logic
     public Item heldItem;
     public int quantity;
-    public int maxStackSize;
+    public int maxStackSize = 1;
     public SlotType slotType = SlotType.IN_OUT;
     public bool locked;
 
