@@ -74,8 +74,8 @@ public class Player : MonoBehaviour
         }
         else
         {
-            playerScale.x = 1;
-            WalkState = 0;
+            //playerScale.x = 1;
+            WalkState = 5;
             rb2D.velocity = new Vector2(0, 0);
         }
 

@@ -154,5 +154,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd2a1a3a4c679147816bb698c26cce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceX: 1
-  forceY: 1
+  forceX: 3
+  forceY: 3
